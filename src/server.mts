@@ -9,7 +9,7 @@ const app: Express = express();
 
 app.use(express.json());
 app.use("/api/v1", pineconeCrudRouter);
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public/build")));
 
 app.get("/testing", (req, res) => res.send("server testing ok"));
 

@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import InputForm from "../components/InputForm";
 import WeatherCard from "../components/WeatherCard";
-import { WeatherResObject, DataList } from "../../types";
 import toast from "react-hot-toast";
 
 export default function WeatherApp() {
-  const [weatherData, setWeatherData] = useState<DataList[] | null>(null);
+  const [weatherData, setWeatherData] = useState<any>(null);
   const [message, setMessage] = useState("Search for a city to get started");
 
   const URL = `https://api.openweathermap.org/data/2.5`;
@@ -17,13 +16,16 @@ export default function WeatherApp() {
     (async () => {
       try {
         //getting user current location and calling api
-      //  console.log("fdfdfdff");
-       
+        //  console.log("fdfdfdff");
+
         navigator.geolocation.getCurrentPosition(async (success) => {
-          console.log("🚀WeatherPage.tsx:12 navigator.geolocation.getCurrentPosition ~ success:", success)
+          console.log(
+            "🚀WeatherPage.tsx:12 navigator.geolocation.getCurrentPosition ~ success:",
+            success
+          );
           const { latitude, longitude } = success.coords;
 
-          const { data } = await axios.get<WeatherResObject>(
+          const { data } = await axios.get<any>(
             `${URL}/forecast?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
           );
 
@@ -57,7 +59,9 @@ export default function WeatherApp() {
 
       {weatherData?.length && (
         <div className="main_container flex justify-center gap-8 m-10">
-          {weatherData?.map((item, i) => <WeatherCard key={i} data={item} />)}
+          {weatherData?.map((item: any, i: any) => (
+            <WeatherCard key={i} data={item} />
+          ))}
         </div>
       )}
     </main>

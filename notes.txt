@@ -1,7 +1,13 @@
 6-sep-2023
-database=index in pinecone 
+
+https://github.com/mInzamamMalik/vector-database-hello-world
+
 
 - Embedding hum create kare gye openai se but aur chezo se bhi embedding create ho sagti hy 
 - openai ki embedding ka benchmark sabse axhe hy
 - quality of openai embedding is the best
+- upsert= an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
+- vector can't be converted back to text
+- name space=collection
+- database=index in pinecone 
 - 

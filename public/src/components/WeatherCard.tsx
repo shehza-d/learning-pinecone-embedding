@@ -1,6 +1,4 @@
-import { DataList } from "../../types";
-
-export default function WeatherCard({ data }: { data: DataList }) {
+export default function WeatherCard({ data }: { data: any }) {
   return (
     <div className="border text-white textShadow border-gray-500/40 shadow-2xl drop-shadow-sm backdrop-blur-sm hover:backdrop-blur-0 transition-all duration- rounded-xl">
       <div className="flex justify-center items-center">

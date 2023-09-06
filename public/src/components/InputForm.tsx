@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useRef } from "react";
-import { DataList, WeatherResObject } from "../../types";
 import type { Dispatch, SetStateAction } from "react";
 import toast from "react-hot-toast";
 
@@ -10,8 +9,8 @@ export default function InputForm({
   URL,
   API_KEY,
 }: {
-  setWeatherData: Dispatch<SetStateAction<DataList[] | null>>;
-  setMessage: Dispatch<SetStateAction<string>>;
+  setWeatherData: any;
+  setMessage: any;
   URL: string;
   API_KEY: string;
 }) {
@@ -29,7 +28,7 @@ export default function InputForm({
     try {
       toast.loading("Loading...");
 
-      const { data } = await axios.get<WeatherResObject>(
+      const { data } = await axios.get<any>(
         `${URL}/forecast?q=${city}&appid=${API_KEY}&units=metric`
         // "https://learning-chatbot-393109.lm.r.appspot.com/waiting"
       );
@@ -39,7 +38,7 @@ export default function InputForm({
       // if (inputRef.current) inputRef.current.value = "";
       event.target.reset();
 
-      setWeatherData((prev) => {
+      setWeatherData((prev:any) => {
         if (prev === null) return [{ ...data.list[1], city: data.city.name }];
         else return [{ ...data.list[1], city: data.city.name }, ...prev];
       });
