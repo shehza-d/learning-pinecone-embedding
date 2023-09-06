@@ -1,5 +1,5 @@
 {
-  "name": "products-api",
+  "name": "OP-stack",
   "version": "1.0.0",
   "description": "documented api",
   "main": "dist/server.mjs",
@@ -29,6 +29,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^5.7.0",
+    "openai": "^4.4.0",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
