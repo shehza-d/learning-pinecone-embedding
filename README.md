@@ -7,8 +7,8 @@ Pinecone Vector Database hello world - A small curd app
 - OpenAI's embeddings are of the highest quality.
 - An "upsert" is like a database action that updates a row if a specific value is already there in a table. If the value isn't there, it adds a new row.
 - You can't turn a vector back into text easily.
-- In Pinecone, a "database" is the same as an "index."
-- Think of "namespace" as a fancy word for "collection."
+- In Pinecone, an "index" is the same as "database."
+- Think of "namespace" as a fancy word for "collection/table."
 
 ## Embeddings
 
