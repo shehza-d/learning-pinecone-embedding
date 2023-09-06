@@ -1,0 +1,7 @@
+6-sep-2023
+database=index in pinecone 
+
+- Embedding hum create kare gye openai se but aur chezo se bhi embedding create ho sagti hy 
+- openai ki embedding ka benchmark sabse axhe hy
+- quality of openai embedding is the best
+- 
