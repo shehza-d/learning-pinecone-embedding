@@ -1,21 +1,23 @@
-// import { MongoClient, type Db } from "mongodb";
-// import { MONGO_URI, DB_NAME } from "../config/index.mjs";
-
 import { PineconeClient } from "@pinecone-database/pinecone";
+import {
+  PINECONE_API_KEY,
+  PINECONE_ENVIRONMENT,
+  PINECONE_INDEX_NAME,
+} from "../config/index.mjs";
+import type { VectorOperationsApi } from "@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch/index.js";
 
+let index: VectorOperationsApi;
 try {
   const pinecone = new PineconeClient();
   await pinecone.init({
-    environment: "gcp-starter",
-    apiKey: "7785df84-42e8-4416-a415-6ca9ed9d6da4",
+    environment: PINECONE_ENVIRONMENT!,
+    apiKey: PINECONE_API_KEY!,
   });
-  const index = pinecone.Index("hello-world");
+  index = pinecone.Index(PINECONE_INDEX_NAME!);
 } catch (err) {
   console.log("🚀 ~ file: db.ts:16 ~ err:", err);
 }
-// export { database as db };
-
-// "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.mjs\"",
+export { index as db };
 
 // finally {
 //   // Ensures that the client will close when you finish/error

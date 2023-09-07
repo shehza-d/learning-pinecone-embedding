@@ -1,158 +1,201 @@
-import { IProduct } from "../types/index.js";
+// import { IProduct } from "../types/index.js";
 import { db } from "../db/index.mjs";
 import type { Request, Response } from "express";
-import { ObjectId } from "mongodb";
+import { getVectorByEmbeddings } from "../helpers/index.js";
+import { v4 as uuid } from "uuid";
+import { PINECONE_NAME_SPACE } from "../config/index.mjs";
 
-const getAllProducts = async (req: Request, res: Response) => {
+const getAllStories = async (req: Request, res: Response) => {
   console.log(
     "🚀 ~ file: productControllers.ts:7 ~ getAllProducts ~ req:",
-    req
+    req.body
   );
+  const queryText = "retreated";
+
   try {
-    const products = db.collection<IProduct>("products");
-    const data = await products.find<IProduct>({}).toArray();
+    const id = uuid();
+    const vector = await getVectorByEmbeddings(queryText);
 
-    if (!data.length) {
-      res.status(404).send({ message: "Products Not Found" });
-      return;
-    }
+    const queryResponse = await db.query({
+      queryRequest: {
+        vector: vector,
+        id,
+        topK: 100,
+        includeValues: true,
+        includeMetadata: true,
+        namespace: PINECONE_NAME_SPACE,
+      },
+    });
+    console.log(
+      "🚀 ~ file: crudControllers.ts:28 ~ getAllStories ~ queryResponse:",
+      queryResponse
+    );
 
-    res.status(200).send({ message: "All Products fetched", data });
+    // queryResponse?.matches?.map(eachMatch => {
+    //   console.log(`score ${eachMatch.score.toFixed(1)} => ${JSON.stringify(eachMatch.metadata)}\n\n`);
+    // })
+    // console.log(`${queryResponse.matches.length} records found `);
+
+    res.send(queryResponse.matches);
+
+    // if (!data.length) {
+    //   res.status(404).send({ message: "Products Not Found" });
+    //   return;
+    // }
+    const data = "";
+    res.status(200).send({
+      message: "All Products fetched",
+      data,
+      queryResponse: queryResponse.matches,
+      vector,
+      id,
+    });
   } catch (err: any) {
     res.status(500).send({ message: err.message || "Unknown Error" });
   }
 };
 
-const getProduct = async (req: Request, res: Response) => {
-  const { id } = req.params;
+// const getProduct = async (req: Request, res: Response) => {
+//   const { id } = req.params;
 
-  if (!ObjectId.isValid(id)) {
-    res.status(403).send({ message: "Incorrect product id" });
-    return;
-  }
+//   if (!ObjectId.isValid(id)) {
+//     res.status(403).send({ message: "Incorrect product id" });
+//     return;
+//   }
 
-  try {
-    const query = { _id: new ObjectId(id) };
+//   try {
+//     const query = { _id: new ObjectId(id) };
 
-    const products = db.collection<IProduct>("products");
-    const data = await products.findOne<IProduct>(query);
+//     const products = db.collection<IProduct>("products");
+//     const data = await products.findOne<IProduct>(query);
 
-    if (!data) throw Error("Product Not Found!");
+//     if (!data) throw Error("Product Not Found!");
 
-    res.send({ message: "Product found", data });
-  } catch (err: any) {
-    res.status(500).send({ message: err.message || "Unknown Error" });
-  }
-};
+//     res.send({ message: "Product found", data });
+//   } catch (err: any) {
+//     res.status(500).send({ message: err.message || "Unknown Error" });
+//   }
+// };
 
-const addProduct = async (req: Request, res: Response) => {
-  const { name, description } = req.body;
-  const price = Number(req.body.price);
+const addStory = async (req: Request, res: Response) => {
+  const { title, text } = req.body;
 
   // Validation
   if (
-    !name ||
-    !price ||
-    !description ||
-    isNaN(price) ||
-    typeof name !== "string" ||
-    typeof description !== "string"
+    !title ||
+    !text ||
+    typeof title !== "string" ||
+    typeof text !== "string"
   ) {
     res.status(403).send(parameterMissing);
     return;
   }
 
   try {
-    const products = db.collection<IProduct>("products");
-    const data = await products.insertOne({ name, price, description });
+    const id = uuid();
+    const queryText = `title : ${title} text : ${text}`;
+    const vector = await getVectorByEmbeddings(queryText);
 
-    if (data.acknowledged)
-      res.status(201).send({
-        message: "New Product Created!",
-        id: data.insertedId.toString(),
-      });
+    const upsertRequest = {
+      vectors: [
+        {
+          id,
+          values: vector,
+          metadata: { title, text },
+        },
+      ],
+      namespace: 'aa'//PINECONE_NAME_SPACE,
+    };
+
+    const upsertResponse = await db.upsert({ upsertRequest });
+    console.log("upsertResponse: ", upsertResponse);
+
+    res.status(201).send({
+      message: "New Story Created!",
+      id,
+    });
   } catch (err: any) {
     res.status(500).send({ message: err.message || "Unknown Error" });
   }
 };
 
-const updateProduct = async (req: Request, res: Response) => {
-  const { id, name, description } = req.body;
-  const price = Number(req.body.price);
+// const updateStory = async (req: Request, res: Response) => {
+//   const { id, name, description } = req.body;
+//   const price = Number(req.body.price);
 
-  // Validation
-  if (!ObjectId.isValid(id)) {
-    res.status(403).send({ message: "Incorrect product id" });
-    return;
-  }
-  if ((!name && !price && !description) || !id) {
-    res.status(403).send(parameterMissing);
-    return;
-  }
+//   // Validation
+//   if (!ObjectId.isValid(id)) {
+//     res.status(403).send({ message: "Incorrect product id" });
+//     return;
+//   }
+//   if ((!name && !price && !description) || !id) {
+//     res.status(403).send(parameterMissing);
+//     return;
+//   }
 
-  if (price && isNaN(price)) {
-    res.status(403).send("Price missing");
-    return;
-  }
-  if (name && typeof name !== "string") {
-    res.status(403).send("NAME  missing");
-    return;
-  }
-  if (description && typeof description !== "string") {
-    res.status(403).send("description missing");
-    return;
-  }
+//   if (price && isNaN(price)) {
+//     res.status(403).send("Price missing");
+//     return;
+//   }
+//   if (name && typeof name !== "string") {
+//     res.status(403).send("NAME  missing");
+//     return;
+//   }
+//   if (description && typeof description !== "string") {
+//     res.status(403).send("description missing");
+//     return;
+//   }
 
-  let product: Partial<IProduct> = {};
+//   let product: Partial<IProduct> = {};
 
-  name && (product.name = name);
-  price && (product.price = price);
-  description && (product.description = description);
+//   name && (product.name = name);
+//   price && (product.price = price);
+//   description && (product.description = description);
 
-  try {
-    const products = db.collection<IProduct>("products");
-    const filter = { _id: new ObjectId(id) };
-    const updateDoc = { $set: product };
-    const data = await products.updateOne(filter, updateDoc);
+//   try {
+//     const products = db.collection<IProduct>("products");
+//     const filter = { _id: new ObjectId(id) };
+//     const updateDoc = { $set: product };
+//     const data = await products.updateOne(filter, updateDoc);
 
-    if (!data.matchedCount) throw Error("Product Not Found!");
+//     if (!data.matchedCount) throw Error("Product Not Found!");
 
-    res.status(201).send({ message: "Product updated" });
-  } catch (err: any) {
-    res.status(500).send({ message: err.message || "Unknown Error" });
-  }
-};
+//     res.status(201).send({ message: "Product updated" });
+//   } catch (err: any) {
+//     res.status(500).send({ message: err.message || "Unknown Error" });
+//   }
+// };
 
-const deleteProduct = async (req: Request, res: Response) => {
-  const { id } = req.params;
+// const deleteStory = async (req: Request, res: Response) => {
+//   const { id } = req.params;
 
-  if (!ObjectId.isValid(id)) {
-    res.status(403).send({ message: "Incorrect product id" });
-    return;
-  }
-  try {
-    const products = db.collection<IProduct>("products");
-    const query = { _id: new ObjectId(id) };
-    const result = await products.deleteOne(query);
+//   if (!ObjectId.isValid(id)) {
+//     res.status(403).send({ message: "Incorrect product id" });
+//     return;
+//   }
+//   try {
+//     const products = db.collection<IProduct>("products");
+//     const query = { _id: new ObjectId(id) };
+//     const result = await products.deleteOne(query);
 
-    if (!result.deletedCount)
-      throw new Error("No documents matched the query. Deleted 0 documents.");
+//     if (!result.deletedCount)
+//       throw new Error("No documents matched the query. Deleted 0 documents.");
 
-    res.status(201).send({ message: "Successfully deleted one document." });
-  } catch (err: any) {
-    res.status(500).send({ message: err.message || "Unknown Error" });
-  }
-};
+//     res.status(201).send({ message: "Successfully deleted one document." });
+//   } catch (err: any) {
+//     res.status(500).send({ message: err.message || "Unknown Error" });
+//   }
+// };
 
 const parameterMissing = {
-  message: `Required parameter missing. At-least one parameter is required from name, price or description to complete update.`,
+  message: `Required parameter missing. At-least one parameter is required from title or text to complete update.`,
   exampleRequest: {
-    id: "64b661974646eede5776adc6",
-    name: "Samsung",
-    price: 500,
-    description:
-      "Lorem Ipsum is simply dummy book. It has survived not only five centuries, software like Lorem Ipsum.",
+    title: "hello",
+    text: "this is some example text",
   },
 };
 
-export { getAllProducts, getProduct, addProduct, updateProduct, deleteProduct };
+// const addStory = () => {};
+const updateStory = () => {};
+const deleteStory = () => {};
+export { getAllStories, addStory, updateStory, deleteStory };
