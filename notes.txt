@@ -11,3 +11,7 @@ https://github.com/mInzamamMalik/vector-database-hello-world
 - name space=collection
 - database=index in pinecone 
 - 
+
+key words 
+
+embeddings generative-art awesome-list text-to-image semantic-search inpainting image2image ai-art dall-e gpt-4 outpainting dalle2 midjourney prompt-engineering txt2img stable-diffusion generative-ai chatgpt
