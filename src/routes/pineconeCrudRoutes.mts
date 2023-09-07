@@ -1,18 +1,17 @@
 import express from "express";
 import {
-  getAllProducts,
-  getProduct,
-  addProduct,
-  updateProduct,
-  deleteProduct,
+  getAllStories,
+  addStory,
+  updateStory,
+  deleteStory,
 } from "../controllers/crudControllers.js";
 
 const router = express.Router();
 
-router.get("/products", getAllProducts);
-router.get("/product/:id", getProduct);
-router.post("/product", addProduct);
-router.put("/product", updateProduct);
-router.delete("/product/:id", deleteProduct);
+router.get("/stories", getAllStories);
+// router.get("/product/:id", getProduct);
+router.post("/story", addStory);
+router.put("/story/:id", updateStory);
+router.delete("/story/:id", deleteStory);
 
 export { router as pineconeCrudRouter };
