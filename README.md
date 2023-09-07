@@ -1,6 +1,6 @@
-# Pinecone crud
+# [Pinecone](https://www.pinecone.io/)
 
-Pinecone Vector Database hello world - A small curd app
+Pinecone Vector Database - A small curd app
 
 - We can create embeddings not only with OpenAI but also using other methods.
 - OpenAI's embeddings are considered the best standard.
