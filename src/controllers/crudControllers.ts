@@ -16,16 +16,18 @@ const getAllStories = async (req: Request, res: Response) => {
     const id = uuid();
     const vector = await getVectorByEmbeddings(queryText);
 
+    // find by id like document db or find by vector
     const queryResponse = await db.query({
       queryRequest: {
         vector: vector,
-        id,
+        // id,
         topK: 100,
-        includeValues: true,
+        includeValues: false,
         includeMetadata: true,
-        namespace: PINECONE_NAME_SPACE,
+        // namespace: PINECONE_NAME_SPACE,
       },
     });
+
     console.log(
       "🚀 ~ file: crudControllers.ts:28 ~ getAllStories ~ queryResponse:",
       queryResponse
@@ -36,7 +38,7 @@ const getAllStories = async (req: Request, res: Response) => {
     // })
     // console.log(`${queryResponse.matches.length} records found `);
 
-    res.send(queryResponse.matches);
+    // res.send(queryResponse.matches);
 
     // if (!data.length) {
     //   res.status(404).send({ message: "Products Not Found" });
@@ -93,7 +95,7 @@ const addStory = async (req: Request, res: Response) => {
 
   try {
     const id = uuid();
-    const queryText = `title : ${title} text : ${text}`;
+    const queryText = `${title} ${text}`;
     const vector = await getVectorByEmbeddings(queryText);
 
     const upsertRequest = {
@@ -104,7 +106,7 @@ const addStory = async (req: Request, res: Response) => {
           metadata: { title, text },
         },
       ],
-      namespace: 'aa'//PINECONE_NAME_SPACE,
+      // namespace: 'aa'//PINECONE_NAME_SPACE,
     };
 
     const upsertResponse = await db.upsert({ upsertRequest });
@@ -115,7 +117,12 @@ const addStory = async (req: Request, res: Response) => {
       id,
     });
   } catch (err: any) {
-    res.status(500).send({ message: err.message || "Unknown Error" });
+    console.log("🚀 ~ file: crudControllers.ts:118 ~ addStory ~ err:", err);
+    res
+      .status(500)
+      .send({
+        message: err.message || "Failed to create story, please try later",
+      });
   }
 };
 
