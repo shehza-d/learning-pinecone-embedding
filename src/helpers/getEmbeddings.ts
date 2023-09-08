@@ -1,7 +1,11 @@
 import OpenAI from "openai";
 import { OPEN_AI_KEY } from "../config/index.mjs";
 
-export const getVectorByEmbeddings = async (text: string) => {
+/*
+add js docs
+@ getEmbeddings return vector
+*/
+export const getEmbeddings = async (text: string) => {
   try {
     const openai = new OpenAI({
       apiKey: OPEN_AI_KEY,

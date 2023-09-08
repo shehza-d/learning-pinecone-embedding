@@ -1,7 +1,7 @@
 // import { IProduct } from "../types/index.js";
 import { db } from "../db/index.mjs";
 import type { Request, Response } from "express";
-import { getVectorByEmbeddings } from "../helpers/index.js";
+import { getEmbeddings } from "../helpers/getEmbeddings.js";
 import { v4 as uuid } from "uuid";
 import { PINECONE_NAME_SPACE } from "../config/index.mjs";
 
@@ -14,7 +14,7 @@ const getAllStories = async (req: Request, res: Response) => {
 
   try {
     const id = uuid();
-    const vector = await getVectorByEmbeddings(queryText);
+    const vector = await getEmbeddings(queryText);
 
     // find by id like document db or find by vector
     const queryResponse = await db.query({
@@ -96,7 +96,7 @@ const addStory = async (req: Request, res: Response) => {
   try {
     const id = uuid();
     const queryText = `${title} ${text}`;
-    const vector = await getVectorByEmbeddings(queryText);
+    const vector = await getEmbeddings(queryText);
 
     const upsertRequest = {
       vectors: [
@@ -118,11 +118,9 @@ const addStory = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.log("🚀 ~ file: crudControllers.ts:118 ~ addStory ~ err:", err);
-    res
-      .status(500)
-      .send({
-        message: err.message || "Failed to create story, please try later",
-      });
+    res.status(500).send({
+      message: err.message || "Failed to create story, please try later",
+    });
   }
 };
 
