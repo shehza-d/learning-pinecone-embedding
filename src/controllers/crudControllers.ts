@@ -3,7 +3,8 @@ import { db } from "../db/index.mjs";
 import type { Request, Response } from "express";
 import { getEmbeddings } from "../helpers/getEmbeddings.js";
 import { v4 as uuid } from "uuid";
-import { PINECONE_NAME_SPACE } from "../config/index.mjs";
+// import { PINECONE_NAME_SPACE } from "../config/index.mjs";
+// PINECONE_NAME_SPACE is not available in pinecone free version
 
 const getAllStories = async (req: Request, res: Response) => {
   console.log(
@@ -11,25 +12,23 @@ const getAllStories = async (req: Request, res: Response) => {
     req.body
   );
   const queryText = "retreated";
+  const id = uuid();
 
   try {
-    const id = uuid();
-    const vector = await getEmbeddings(queryText);
+    const { vector } = await getEmbeddings(queryText);
 
     // find by id like document db or find by vector
     const queryResponse = await db.query({
-      queryRequest: {
-        vector: vector,
-        // id,
-        topK: 100,
-        includeValues: false,
-        includeMetadata: true,
-        // namespace: PINECONE_NAME_SPACE,
-      },
+      vector,
+      // id,
+      topK: 100,
+      includeValues: false,
+      includeMetadata: true,
+      // namespace: PINECONE_NAME_SPACE,
     });
 
     console.log(
-      "🚀 ~ file: crudControllers.ts:28 ~ getAllStories ~ queryResponse:",
+      "🚀crudControllers.ts:28 getAllStories queryResponse:",
       queryResponse
     );
 
@@ -44,12 +43,9 @@ const getAllStories = async (req: Request, res: Response) => {
     //   res.status(404).send({ message: "Products Not Found" });
     //   return;
     // }
-    const data = "";
     res.status(200).send({
       message: "All Products fetched",
-      data,
       queryResponse: queryResponse.matches,
-      vector,
       id,
     });
   } catch (err: any) {
@@ -96,25 +92,22 @@ const addStory = async (req: Request, res: Response) => {
   try {
     const id = uuid();
     const queryText = `${title} ${text}`;
-    const vector = await getEmbeddings(queryText);
+    const { vector, usage } = await getEmbeddings(queryText);
 
     const upsertRequest = {
-      vectors: [
-        {
-          id,
-          values: vector,
-          metadata: { title, text },
-        },
-      ],
-      // namespace: 'aa'//PINECONE_NAME_SPACE,
+      id,
+      values: vector,
+      metadata: { id, title, text },
+      // namespace: //PINECONE_NAME_SPACE,
     };
 
-    const upsertResponse = await db.upsert({ upsertRequest });
+    const upsertResponse = await db.upsert([upsertRequest]);
     console.log("upsertResponse: ", upsertResponse);
 
     res.status(201).send({
       message: "New Story Created!",
       id,
+      usage,
     });
   } catch (err: any) {
     console.log("🚀 ~ file: crudControllers.ts:118 ~ addStory ~ err:", err);
