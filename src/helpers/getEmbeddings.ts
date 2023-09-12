@@ -14,6 +14,9 @@ import { cleanText } from "./textCleaning.js";
  * @returns A 1536 dimension vector number[]
  */
 
+// since pine cone can only store data in vector form (numeric representation of text)
+// we will have to convert text data into vector of a certain dimension (1536 in case of openai)
+
 export const getEmbeddings = async (text: string) => {
   try {
     if (text.length > 250) throw new Error("Text is too long!!");

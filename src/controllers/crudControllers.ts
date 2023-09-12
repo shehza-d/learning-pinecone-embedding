@@ -3,43 +3,52 @@ import { db } from "../db/index.mjs";
 import type { Request, Response } from "express";
 import { getEmbeddings } from "../helpers/getEmbeddings.js";
 import { v4 as uuid } from "uuid";
+import { vectorOfEmptyString } from "../data/index.js";
 // import { PINECONE_NAME_SPACE } from "../config/index.mjs";
 // PINECONE_NAME_SPACE is not available in pinecone free version
 
 const getAllStories = async (req: Request, res: Response) => {
-  console.log(
-    "🚀 ~ file: productControllers.ts:7 ~ getAllProducts ~ req:",
-    req.body
-  );
-  const queryText = "retreated";
+  const { search } = req?.query;
+  const queryText: any = search || ""; // empty string to fetch all data
+
+  // Pagination
+  const from = 0;
+  const to = 0;
+
   const id = uuid();
 
+  let query;
   try {
-    const { vector } = await getEmbeddings(queryText);
+    if (queryText) {
+      const { vector } = await getEmbeddings(queryText);
+      // find by id like document db or find by vector
+      query = {
+        vector,
+        // id,
+        topK: 100,
+        includeValues: false,
+        includeMetadata: true,
+        // namespace: PINECONE_NAME_SPACE,
+      };
+    } else {
+      const vector = vectorOfEmptyString;
+      query = {
+        vector,
+        topK: 100,
+        includeValues: false,
+        includeMetadata: true,
+      };
+    }
 
-    // find by id like document db or find by vector
-    const queryResponse = await db.query({
-      vector,
-      // id,
-      topK: 100,
-      includeValues: false,
-      includeMetadata: true,
-      // namespace: PINECONE_NAME_SPACE,
-    });
-
+    const queryResponse = await db.query(query);
     console.log(
       "🚀crudControllers.ts:28 getAllStories queryResponse:",
       queryResponse
     );
 
-    // queryResponse?.matches?.map(eachMatch => {
-    //   console.log(`score ${eachMatch.score.toFixed(1)} => ${JSON.stringify(eachMatch.metadata)}\n\n`);
-    // })
-    // console.log(`${queryResponse.matches.length} records found `);
-
     // res.send(queryResponse.matches);
 
-    // if (!data.length) {
+    // if (!queryResponse.matches.length) {
     //   res.status(404).send({ message: "Products Not Found" });
     //   return;
     // }
@@ -106,8 +115,13 @@ const addStory = async (req: Request, res: Response) => {
 
     res.status(201).send({
       message: "New Story Created!",
-      id,
       usage,
+      data: {
+        id,
+        title,
+        text,
+      },
+      createdOn: `${new Date()}`,
     });
   } catch (err: any) {
     console.log("🚀 ~ file: crudControllers.ts:118 ~ addStory ~ err:", err);
