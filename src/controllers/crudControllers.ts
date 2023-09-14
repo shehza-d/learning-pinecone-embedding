@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import { getEmbeddings } from "../helpers/getEmbeddings.js";
 import { v4 as uuid } from "uuid";
 import { vectorOfEmptyString } from "../data/index.js";
+import { cleanText } from "../helpers/textCleaning.js";
 // import { PINECONE_NAME_SPACE } from "../config/index.mjs";
 // PINECONE_NAME_SPACE is not available in pinecone free version
 
@@ -13,7 +14,7 @@ const getAllStories = async (req: Request, res: Response) => {
 
   // Pagination
   const from = 0;
-  const to = 100;
+  const limitTo = 100;
 
   const id = uuid();
 
@@ -25,7 +26,7 @@ const getAllStories = async (req: Request, res: Response) => {
       query = {
         vector,
         // id,
-        topK: to,
+        topK: limitTo,
         includeValues: false,
         includeMetadata: true,
         // namespace: PINECONE_NAME_SPACE,
@@ -34,13 +35,14 @@ const getAllStories = async (req: Request, res: Response) => {
       const vector = vectorOfEmptyString;
       query = {
         vector,
-        topK: 100,
+        topK: limitTo,
         includeValues: false,
         includeMetadata: true,
       };
     }
 
     const queryResponse = await db.query(query);
+
     console.log(
       "🚀crudControllers.ts:28 getAllStories queryResponse:",
       queryResponse
@@ -53,7 +55,7 @@ const getAllStories = async (req: Request, res: Response) => {
 
     res.status(200).send({
       message: "All Products fetched",
-      queryResponse: queryResponse.matches,
+      data: queryResponse.matches,
       id,
     });
   } catch (err: any) {
@@ -61,8 +63,9 @@ const getAllStories = async (req: Request, res: Response) => {
   }
 };
 
-const addStory = async (req: Request, res: Response) => {
-  const { title, text } = req.body;
+const upsertStory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  let { title, text } = req.body;
 
   // Validation
   if (
@@ -74,14 +77,13 @@ const addStory = async (req: Request, res: Response) => {
     res.status(403).send(parameterMissing);
     return;
   }
-
+  
   try {
-    const id = uuid();
     const queryText = `${title} ${text}`;
     const { vector, usage } = await getEmbeddings(queryText);
 
     const upsertRequest = {
-      id,
+      id: id || uuid(),
       values: vector,
       metadata: { id, title, text },
       // namespace: //PINECONE_NAME_SPACE,
@@ -100,52 +102,15 @@ const addStory = async (req: Request, res: Response) => {
       },
       createdOn: `${new Date()}`,
     });
+    // res
+    // .status(201)
+    // .send({ message: "Product updated", usage, data: { id, title, text } });
   } catch (err: any) {
     console.log("🚀 ~ file: crudControllers.ts:118 ~ addStory ~ err:", err);
+    // res.status(500).send({ message: err.message || "Unknown Error" });
     res.status(500).send({
       message: err.message || "Failed to create story, please try later",
     });
-  }
-};
-
-const updateStory = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { title, text } = req.body;
-
-  // Validation
-  if (
-    !title ||
-    !text ||
-    typeof title !== "string" ||
-    typeof text !== "string"
-  ) {
-    res.status(403).send(parameterMissing);
-    return;
-  }
-
-  let product: Partial<IPost> = {};
-
-  text && (product.text = text);
-  title && (product.title = title);
-
-  try {
-    const queryText = `${title} ${text}`;
-    const { vector, usage } = await getEmbeddings(queryText);
-
-    const upsertRequest = {
-      id,
-      values: vector,
-      metadata: { id, title, text },
-    };
-
-    const upsertResponse = await db.update(upsertRequest);
-    console.log("upsertResponse: ", upsertResponse);
-
-    res
-      .status(201)
-      .send({ message: "Product updated", usage, data: { id, title, text } });
-  } catch (err: any) {
-    res.status(500).send({ message: err.message || "Unknown Error" });
   }
 };
 
@@ -187,6 +152,6 @@ const parameterMissing = {
   },
 };
 
-export { getAllStories, addStory, updateStory, deleteStory, deleteAllStory };
+export { getAllStories, upsertStory, deleteStory, deleteAllStory };
 
 // kya ak db ma normal data aur vector at the same time aasagta hy??

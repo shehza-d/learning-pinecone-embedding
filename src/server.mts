@@ -3,12 +3,13 @@ import path from "path";
 import { pineconeCrudRouter } from "./routes/pineconeCrudRoutes.mjs";
 import { PORT } from "./config/index.mjs";
 import type { Express } from "express";
+import cors from "cors";
 
 const __dirname = path.resolve();
 const app: Express = express();
 
 app.use(express.json());
-
+app.use(cors({ origin: ["http://localhost:3000"] }));
 app.use("/api/v1", pineconeCrudRouter);
 
 app.get("/testing", (req, res) => res.send("pine1 server testing ok"));

@@ -1,8 +1,7 @@
 import express from "express";
 import {
   getAllStories,
-  addStory,
-  updateStory,
+  upsertStory,
   deleteStory,
   deleteAllStory
 } from "../controllers/crudControllers.js";
@@ -11,8 +10,8 @@ const router = express.Router();
 
 router.get("/stories", getAllStories);
 // router.get("/story/:id", getStory);
-router.post("/story", addStory);
-router.put("/story/:id", updateStory);
+router.post("/story", upsertStory);
+router.put("/story/:id", upsertStory);
 router.delete("/story/:id", deleteStory);
 router.delete("/stories", deleteAllStory);
 

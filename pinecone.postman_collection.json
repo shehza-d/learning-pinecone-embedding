@@ -1,0 +1,392 @@
+{
+	"info": {
+		"_postman_id": "1655e7da-1894-49ca-b9e3-343a627e0da0",
+		"name": "OpenAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23050191"
+	},
+	"item": [
+		{
+			"name": "Pinecone-hello-world",
+			"item": [
+				{
+					"name": "getAllStories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/stories?search=shehzad",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"stories"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "shehzad"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "getAllStories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3003/api/v1/stories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3003",
+									"path": [
+										"api",
+										"v1",
+										"stories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "767"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2ff-l2J08Ljqhw/pOwCylEtmN/1BVJk\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 10 Sep 2023 20:32:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"All Products fetched\",\n    \"data\": \"\",\n    \"queryResponse\": [\n        {\n            \"id\": \"b71a98e9-fbee-49c2-9b7f-9a0dd35ea280\",\n            \"score\": 0.74076885,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"b71a98e9-fbee-49c2-9b7f-9a0dd35ea280\",\n                \"text\": \"this is %$#some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"3983302c-cc8d-4bf2-8f18-7c3fab4598a7\",\n            \"score\": 0.740457892,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"3983302c-cc8d-4bf2-8f18-7c3fab4598a7\",\n                \"text\": \"this is %$#some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"8b2ee6b0-4862-42ea-8018-43b0d6ef6eb1\",\n            \"score\": 0.740457892,\n            \"values\": [],\n            \"metadata\": {\n                \"text\": \"this is some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"2431a906-16bd-4918-8e68-6dad64f516ab\",\n            \"score\": 0.740457892,\n            \"values\": [],\n            \"metadata\": {\n                \"text\": \"this is some example text\",\n                \"title\": \"hello\"\n            }\n        }\n    ],\n    \"id\": \"0911c27b-3e23-4c16-ad00-94ccaee1bf01\"\n}"
+						},
+						{
+							"name": "getAllStories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/stories?search=shehzad",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"stories"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "shehzad"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "2478"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9ae-nf5hAd/isgtYvzr3PwYHjd1v1Ck\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Sep 2023 21:32:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"All Products fetched\",\n    \"queryResponse\": [\n        {\n            \"id\": \"b71a98e9-fbee-49c2-9b7f-9a0dd35ea280\",\n            \"score\": 0.776610196,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"b71a98e9-fbee-49c2-9b7f-9a0dd35ea280\",\n                \"text\": \"this is %$#some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"2431a906-16bd-4918-8e68-6dad64f516ab\",\n            \"score\": 0.776403129,\n            \"values\": [],\n            \"metadata\": {\n                \"text\": \"this is some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"3983302c-cc8d-4bf2-8f18-7c3fab4598a7\",\n            \"score\": 0.776403129,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"3983302c-cc8d-4bf2-8f18-7c3fab4598a7\",\n                \"text\": \"this is %$#some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"8b2ee6b0-4862-42ea-8018-43b0d6ef6eb1\",\n            \"score\": 0.776403129,\n            \"values\": [],\n            \"metadata\": {\n                \"text\": \"this is some example text\",\n                \"title\": \"hello\"\n            }\n        },\n        {\n            \"id\": \"ab4da8f5-4f7b-4013-b495-766b0c513e13\",\n            \"score\": 0.775415719,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"ab4da8f5-4f7b-4013-b495-766b0c513e13\",\n                \"text\": \"this is %$#some example text\",\n                \"title\": \"last\"\n            }\n        },\n        {\n            \"id\": \"05532373624504562782\",\n            \"score\": 0.748226225,\n            \"values\": [],\n            \"metadata\": {\n                \"id\": \"05532373624504562782\",\n                \"text\": \"this is %$#some example text upp\",\n                \"title\": \"updating data\"\n            }\n        },\n        {\n            \"id\": \"89221792249528654484\",\n            \"score\": 0.727340281,\n            \"values\": [],\n            \"metadata\": {\n                \"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\\n\\n\",\n                \"title\": \"asasasas\"\n            }\n        },\n        {\n            \"id\": \"91597673102172195514\",\n            \"score\": 0.716131806,\n            \"values\": [],\n            \"metadata\": {\n                \"body\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\\n\\n\",\n                \"title\": \"testing\"\n            }\n        }\n    ],\n    \"id\": \"cf95f359-c5f6-4560-a062-cc3a2fe4d853\"\n}"
+						}
+					]
+				},
+				{
+					"name": "addStory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"testing 2\",\n    \"text\": \"this is %$#some example text2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/story",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"story"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "addStory",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"testing 2\",\n    \"text\": \"this is %$#some example text2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/story",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"story"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "217"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"d9-yuGUzCl0VeiviCF3NwZfszDGSaA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Sep 2023 21:36:40 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"New Data Created!\",\n    \"usage\": {\n        \"prompt_tokens\": 9,\n        \"total_tokens\": 9\n    },\n    \"data\": {\n        \"title\": \"testing 2\",\n        \"text\": \"this is %$#some example text2\"\n    },\n    \"createdOn\": \"Fri Sep 15 2023 02:36:40 GMT+0500 (Pakistan Standard Time)\"\n}"
+						}
+					]
+				},
+				{
+					"name": "updatePost",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"updating data\",\n    \"text\": \"this is %$#some example text upp\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/story/05532373624504562782",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"story",
+								"05532373624504562782"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "exampleRes",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"updating data\",\n    \"text\": \"this is %$#some example text upp\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/v1/story/05532373624504562782",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"v1",
+										"story",
+										"05532373624504562782"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "252"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fc-nF9v8ARgJFt3NJajf0S5ZLGhvVE\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Sep 2023 21:31:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"New Data Created!\",\n    \"usage\": {\n        \"prompt_tokens\": 8,\n        \"total_tokens\": 8\n    },\n    \"data\": {\n        \"id\": \"05532373624504562782\",\n        \"title\": \"updating data\",\n        \"text\": \"this is %$#some example text upp\"\n    },\n    \"createdOn\": \"Fri Sep 15 2023 02:31:13 GMT+0500 (Pakistan Standard Time)\"\n}"
+						}
+					]
+				},
+				{
+					"name": "deleteOne",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/story/ab4da8f5-4f7b-4013-b495-766b0c513e13",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"story",
+								"ab4da8f5-4f7b-4013-b495-766b0c513e13"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "depression-counselor-chatGPT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"text\": \" You:  testingng You:  testingng You:  testingng You:  testingng You:  testingng\",\n  \"gender\": \"Male\",\n  \"country\": \"Pakistan\",\n  \"start_sequence\": \" Counselor: \"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/depression",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"depression"
+					]
+				},
+				"description": "Open AI is being called from server"
+			},
+			"response": []
+		}
+	]
+}
