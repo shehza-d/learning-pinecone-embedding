@@ -1,4 +1,4 @@
-// import { IProduct } from "../types/index.js";
+import { IPost } from "../types/index.js";
 import { db } from "../db/index.mjs";
 import type { Request, Response } from "express";
 import { getEmbeddings } from "../helpers/getEmbeddings.js";
@@ -13,7 +13,7 @@ const getAllStories = async (req: Request, res: Response) => {
 
   // Pagination
   const from = 0;
-  const to = 0;
+  const to = 100;
 
   const id = uuid();
 
@@ -25,7 +25,7 @@ const getAllStories = async (req: Request, res: Response) => {
       query = {
         vector,
         // id,
-        topK: 100,
+        topK: to,
         includeValues: false,
         includeMetadata: true,
         // namespace: PINECONE_NAME_SPACE,
@@ -46,12 +46,11 @@ const getAllStories = async (req: Request, res: Response) => {
       queryResponse
     );
 
-    // res.send(queryResponse.matches);
+    if (!queryResponse?.matches?.length) {
+      res.status(404).send({ message: "Data Not Found" });
+      return;
+    }
 
-    // if (!queryResponse.matches.length) {
-    //   res.status(404).send({ message: "Products Not Found" });
-    //   return;
-    // }
     res.status(200).send({
       message: "All Products fetched",
       queryResponse: queryResponse.matches,
@@ -61,28 +60,6 @@ const getAllStories = async (req: Request, res: Response) => {
     res.status(500).send({ message: err.message || "Unknown Error" });
   }
 };
-
-// const getProduct = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-
-//   if (!ObjectId.isValid(id)) {
-//     res.status(403).send({ message: "Incorrect product id" });
-//     return;
-//   }
-
-//   try {
-//     const query = { _id: new ObjectId(id) };
-
-//     const products = db.collection<IProduct>("products");
-//     const data = await products.findOne<IProduct>(query);
-
-//     if (!data) throw Error("Product Not Found!");
-
-//     res.send({ message: "Product found", data });
-//   } catch (err: any) {
-//     res.status(500).send({ message: err.message || "Unknown Error" });
-//   }
-// };
 
 const addStory = async (req: Request, res: Response) => {
   const { title, text } = req.body;
@@ -114,7 +91,7 @@ const addStory = async (req: Request, res: Response) => {
     console.log("upsertResponse: ", upsertResponse);
 
     res.status(201).send({
-      message: "New Story Created!",
+      message: "New Data Created!",
       usage,
       data: {
         id,
@@ -131,73 +108,76 @@ const addStory = async (req: Request, res: Response) => {
   }
 };
 
-// const updateStory = async (req: Request, res: Response) => {
-//   const { id, name, description } = req.body;
-//   const price = Number(req.body.price);
+const updateStory = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, text } = req.body;
 
-//   // Validation
-//   if (!ObjectId.isValid(id)) {
-//     res.status(403).send({ message: "Incorrect product id" });
-//     return;
-//   }
-//   if ((!name && !price && !description) || !id) {
-//     res.status(403).send(parameterMissing);
-//     return;
-//   }
+  // Validation
+  if (
+    !title ||
+    !text ||
+    typeof title !== "string" ||
+    typeof text !== "string"
+  ) {
+    res.status(403).send(parameterMissing);
+    return;
+  }
 
-//   if (price && isNaN(price)) {
-//     res.status(403).send("Price missing");
-//     return;
-//   }
-//   if (name && typeof name !== "string") {
-//     res.status(403).send("NAME  missing");
-//     return;
-//   }
-//   if (description && typeof description !== "string") {
-//     res.status(403).send("description missing");
-//     return;
-//   }
+  let product: Partial<IPost> = {};
 
-//   let product: Partial<IProduct> = {};
+  text && (product.text = text);
+  title && (product.title = title);
 
-//   name && (product.name = name);
-//   price && (product.price = price);
-//   description && (product.description = description);
+  try {
+    const queryText = `${title} ${text}`;
+    const { vector, usage } = await getEmbeddings(queryText);
 
-//   try {
-//     const products = db.collection<IProduct>("products");
-//     const filter = { _id: new ObjectId(id) };
-//     const updateDoc = { $set: product };
-//     const data = await products.updateOne(filter, updateDoc);
+    const upsertRequest = {
+      id,
+      values: vector,
+      metadata: { id, title, text },
+    };
 
-//     if (!data.matchedCount) throw Error("Product Not Found!");
+    const upsertResponse = await db.update(upsertRequest);
+    console.log("upsertResponse: ", upsertResponse);
 
-//     res.status(201).send({ message: "Product updated" });
-//   } catch (err: any) {
-//     res.status(500).send({ message: err.message || "Unknown Error" });
-//   }
-// };
+    res
+      .status(201)
+      .send({ message: "Product updated", usage, data: { id, title, text } });
+  } catch (err: any) {
+    res.status(500).send({ message: err.message || "Unknown Error" });
+  }
+};
 
-// const deleteStory = async (req: Request, res: Response) => {
-//   const { id } = req.params;
+const deleteStory = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-//   if (!ObjectId.isValid(id)) {
-//     res.status(403).send({ message: "Incorrect product id" });
-//     return;
-//   }
-//   try {
-//     const products = db.collection<IProduct>("products");
-//     const query = { _id: new ObjectId(id) };
-//     const result = await products.deleteOne(query);
+  try {
+    const deleteResponse = await db.deleteOne(id);
+    console.log(
+      "🚀 ~ file: crudControllers.ts:157 ~ deleteStory ~ deleteResponse:",
+      deleteResponse
+    );
 
-//     if (!result.deletedCount)
-//       throw new Error("No documents matched the query. Deleted 0 documents.");
+    // if (!deleteResponse) {
+    //   throw new Error("No documents matched the query. Deleted 0 documents.");
+    // }
 
-//     res.status(201).send({ message: "Successfully deleted one document." });
-//   } catch (err: any) {
-//     res.status(500).send({ message: err.message || "Unknown Error" });
-//   }
-// };
+    res.status(201).send({ message: "Successfully deleted one document.", id });
+  } catch (err: any) {
+    res.status(500).send({ message: err.message || "Unknown Error" });
+  }
+};
+
+const deleteAllStory = async (req: Request, res: Response) => {
+  try {
+    const deleteResponse = await db.deleteAll();
+    console.log("🚀176 ~ deleteAllStory ~ deleteResponse:", deleteResponse);
+    res.status(201).send({ message: "Successfully deleted All documents." });
+  } catch (err: any) {
+    res.status(500).send({ message: err.message || "Unknown Error" });
+  }
+};
 
 const parameterMissing = {
   message: `Required parameter missing. At-least one parameter is required from title or text to complete update.`,
@@ -207,7 +187,6 @@ const parameterMissing = {
   },
 };
 
-// const addStory = () => {};
-const updateStory = () => {};
-const deleteStory = () => {};
-export { getAllStories, addStory, updateStory, deleteStory };
+export { getAllStories, addStory, updateStory, deleteStory, deleteAllStory };
+
+// kya ak db ma normal data aur vector at the same time aasagta hy??

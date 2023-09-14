@@ -1,9 +1,8 @@
 // types for server
-import type { ObjectId } from "mongodb";
+// import type { ObjectId } from "mongodb";
 
-export interface IProduct {
-  _id?: ObjectId;
-  name: string;
-  price: number;
-  description: string;
+export interface IPost {
+  _id?: string;
+  title: string;
+  text: string;
 }
